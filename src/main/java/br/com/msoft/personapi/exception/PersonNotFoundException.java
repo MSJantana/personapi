@@ -1,4 +1,12 @@
 package br.com.msoft.personapi.exception;
 
-public class PersonNotFoundException {
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
+@ResponseStatus(HttpStatus.NOT_FOUND)
+public class PersonNotFoundException extends Exception {
+
+    public PersonNotFoundException(Long id){
+        super("Person Not Found With ID" + id);
+    }
 }
