@@ -6,6 +6,7 @@ import br.com.msoft.personapi.dto.response.MessageResponseDTO;
 import br.com.msoft.personapi.entities.Person;
 import br.com.msoft.personapi.exception.PersonNotFoundException;
 import br.com.msoft.personapi.repository.PersonRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,16 +15,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor(onConstructor = @__(@Autowired))
 public class PersonService {
-    private PersonRepository personRepository;
+    private final PersonRepository personRepository;
 
-    private PersonMapper personMapper = PersonMapper.INSTANCE;
-    private Object PersonDTO;
-
-    @Autowired
-    public PersonService(PersonRepository personRepository) {
-        this.personRepository = personRepository;
-    }
+    private final PersonMapper personMapper;
 
     public MessageResponseDTO createPerson(@RequestBody PersonDTO personDTO){
         Person personToSave = personMapper.toModel(personDTO);
@@ -60,17 +56,13 @@ public class PersonService {
     private Person verifyIfExists (Long id) throws PersonNotFoundException {
         return personRepository.findById(id)
                 .orElseThrow(() -> new PersonNotFoundException(id));
-
     }
 
     public MessageResponseDTO updateById(Long id, PersonDTO personDTO) throws PersonNotFoundException {
         verifyIfExists(id);
-
         Person personToUpdate = personMapper.toModel(personDTO);
         Person updatePerson = personRepository.save(personToUpdate);
-
         return createMessageResponse(updatePerson, "Update person with ID ");
-
     }
 
     private MessageResponseDTO createMessageResponse(Person savePerson, String s) {
